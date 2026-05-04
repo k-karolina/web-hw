@@ -12,9 +12,25 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # LOCAL FALLBACK DATA
 # -----------------------
 students_local = [
-    {"id": 1, "name": "Daniel", "surname": "Barta", "personality": "Funny sarcastic chill guy"},
+        {"id": 1, "name": "Daniel", "surname": "Barta", "personality": "Funny sarcastic chill guy"},
     {"id": 2, "name": "Matúš", "surname": "Bucko", "personality": "Smart quiet logical"},
     {"id": 3, "name": "Adrian", "surname": "Červenka", "personality": "Energetic talkative"},
+    {"id": 4, "name": "Martin", "surname": "Deglovič", "personality": "Calm slightly lazy"},
+    {"id": 5, "name": "Samuel", "surname": "Haring", "personality": "Competitive gamer"},
+    {"id": 6, "name": "Matúš", "surname": "Holečka", "personality": "Helpful friendly"},
+    {"id": 7, "name": "Martin", "surname": "Jelínek", "personality": "Sporty active"},
+    {"id": 8, "name": "Tomáš", "surname": "Jurčák", "personality": "Meme lover funny"},
+    {"id": 9, "name": "Milan", "surname": "Kokina", "personality": "Serious focused"},
+    {"id": 10, "name": "Patrik", "surname": "Korba", "personality": "Chill relaxed"},
+    {"id": 11, "name": "Marcus", "surname": "Martiš", "personality": "Confident leader type"},
+    {"id": 12, "name": "Samuel", "surname": "Martiš", "personality": "Quiet smart"},
+    {"id": 13, "name": "Marko", "surname": "Mihalička", "personality": "Chaotic funny"},
+    {"id": 14, "name": "Rastislav", "surname": "Paták", "personality": "Logical thinker"},
+    {"id": 15, "name": "Matej", "surname": "Randziak", "personality": "Supportive friendly"},
+    {"id": 16, "name": "Dávid", "surname": "Škula", "personality": "Gaming addicted"},
+    {"id": 17, "name": "Samuel", "surname": "Uhrík", "personality": "Sarcastic witty"},
+    {"id": 18, "name": "Janka", "surname": "Vargová", "personality": "Kind caring"},
+    {"id": 19, "name": "Lukáš", "surname": "Vindiš", "personality": "Sporty competitive"},
 ]
 
 # -----------------------
