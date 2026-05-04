@@ -3,23 +3,40 @@ let current = null;
 fetch("/api/students")
 .then(r => r.json())
 .then(data => {
-    const list = document.getElementById("list");
+    const container = document.getElementById("students");
 
     data.forEach(s => {
-        const li = document.createElement("li");
-        li.innerText = s.name + " " + s.surname;
+        const div = document.createElement("div");
+        div.className = "student";
 
-        li.onclick = () => {
+        div.innerHTML = `
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=${s.name}">
+            <span>${s.name} ${s.surname}</span>
+        `;
+
+        div.onclick = () => {
             current = s;
-            document.getElementById("chatTitle").innerText = s.name;
+            openChat(s);
         };
 
-        list.appendChild(li);
+        container.appendChild(div);
     });
 });
 
+function openChat(student) {
+    document.getElementById("chatName").innerText =
+        student.name + " " + student.surname;
+
+    document.getElementById("chatModal").classList.remove("hidden");
+}
+
+function closeChat() {
+    document.getElementById("chatModal").classList.add("hidden");
+}
+
 function send() {
     const msg = document.getElementById("msg").value;
+    if (!current) return;
 
     fetch(`/api/chat/${current.id}`, {
         method: "POST",
@@ -29,20 +46,9 @@ function send() {
     .then(r => r.json())
     .then(d => {
         document.getElementById("messages").innerHTML +=
-        `<div><b>${current.name}:</b> ${d.reply}</div>`;
+        `<div><b>You:</b> ${msg}</div>
+         <div><b>${current.name}:</b> ${d.reply}</div>`;
     });
-}
-
-function addStudent() {
-    fetch("/api/students", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            name: name.value,
-            surname: surname.value,
-            personality: personality.value
-        })
-    }).then(() => location.reload());
 }
 
 function toggleTheme() {
