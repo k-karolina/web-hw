@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Students Chat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+<div class="topbar">
+    <h2>AI Students Chat</h2>
+    <button onclick="toggleTheme()">🌙 / ☀️</button>
+</div>
+
+<div class="container">
+
+    <div class="sidebar">
+        <h3>Students</h3>
+        <ul id="list"></ul>
+
+        <h4>Add Student</h4>
+        <input id="name" placeholder="Name">
+        <input id="surname" placeholder="Surname">
+        <input id="personality" placeholder="Personality">
+        <button onclick="addStudent()">Add</button>
+    </div>
+
+    <div class="chat">
+        <h3 id="chatTitle">Select a student</h3>
+
+        <div id="messages"></div>
+
+        <div class="input">
+            <input id="msg" placeholder="Message...">
+            <button onclick="send()">Send</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
