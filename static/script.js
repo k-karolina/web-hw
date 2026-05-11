@@ -8,7 +8,6 @@ let current = null;
 function loadStudents() {
 
     fetch("/api/students")
-
     .then(r => r.json())
 
     .then(data => {
