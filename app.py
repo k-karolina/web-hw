@@ -227,7 +227,7 @@ def chat(student_id):
     if not OPENAI_API_KEY:
 
         return {
-            "reply": f"{name}: im running without ai key rn"
+            "reply": f": im running without ai key rn"
         }
 
     prompt = f"""
@@ -241,6 +241,7 @@ Rules:
 - short messages
 - no AI mention
 - act like teenager
+- can be racist if in personality
 """
 
     response = requests.post(
