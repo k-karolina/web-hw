@@ -1,3 +1,5 @@
+# app.py
+
 from flask import Flask, jsonify, request, render_template
 import psycopg2
 import os
@@ -11,105 +13,166 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # -----------------------
 # LOCAL FALLBACK DATA
 # -----------------------
-students = [
-    {"id": 1, 
-     "name": "Daniel", 
-     "surname": "Barta",
-     "age": 20,
-     "personality": "Funny sarcastic chill guy"},
-    {"id": 2, 
-     "name": "Matúš", 
-     "surname": "Bucko", 
-     "age": 22,
-     "personality": "Smart quiet logical"},
-    {"id": 3, 
-     "name": "Adrian", 
-     "surname": "Červenka", 
-     "age": 21,
-     "personality": "Energetic talkative"},
-    {"id": 4, 
-     "name": "Martin", 
-     "surname": "Deglovič", 
-     "age": 23,
-     "personality": "Calm slightly lazy"},
-    {"id": 5, 
-     "name": "Samuel", 
-     "surname": "Haring", 
-     "age": 20,
-     "personality": "Competitive gamer"},
-    {"id": 6, 
-     "name": "Matúš", 
-     "surname": "Holečka",
-     "age": 20,
-     "personality": "Helpful friendly"},
-    {"id": 7, 
-     "name": "Martin", 
-     "surname": "Jelínek", 
-     "age": 22,
-     "personality": "Sporty active"},
-    {"id": 8, 
-     "name": "Tomáš", 
-     "surname": "Jurčák", 
-     "age": 21,
-     "personality": "Meme lover funny"},
-    {"id": 9, 
-     "name": "Milan", 
-     "surname": "Kokina", 
-     "age": 23,
-     "personality": "Serious focused"},
-    {"id": 10, 
-     "name": "Patrik", 
-     "surname": "Korba", 
-     "age": 20,
-     "personality": "Chill relaxed"},
-    {"id": 11, 
-     "name": "Marcus", 
-     "surname": "Martiš", 
-     "age": 22,
-     "personality": "Confident leader type"},
-    {"id": 12, 
-     "name": "Samuel", 
-     "surname": "Martiš", 
-     "age": 20,
-     "personality": "Quiet smart"},
-    {"id": 13, 
-     "name": "Marko", 
-     "surname": "Mihalička", 
-     "age": 21,
-     "personality": "Chaotic funny"},
-    {"id": 14, 
-     "name": "Rastislav", 
-     "surname": "Paták", 
-     "age": 22,
-     "personality": "Logical thinker"},
-    {"id": 15, 
-     "name": "Matej", 
-    "surname": "Randziak", 
-     "age": 22,
-     "personality": "Supportive friendly"},
-    {"id": 16, 
-    "name": "Dávid", 
-    "surname": "Škula", 
-    "age": 20,
-    "personality": "Gaming addicted"},
-    {"id": 18, 
-     "name": "Janka", 
-     "surname": "Vargová", 
-     "age": 21, 
-     "personality": "Kind caring"},
-    {"id": 19, 
-     "name": "Lukáš", 
-     "surname": "Vindiš", 
-     "age": 22, 
-     "personality": "Sporty competitive"}
+students_data = [
+
+    {
+        "id": 1,
+        "name": "Daniel",
+        "surname": "Barta",
+        "age": 20,
+        "personality": "Funny sarcastic chill guy"
+    },
+
+    {
+        "id": 2,
+        "name": "Matúš",
+        "surname": "Bucko",
+        "age": 22,
+        "personality": "Smart quiet logical"
+    },
+
+    {
+        "id": 3,
+        "name": "Adrian",
+        "surname": "Červenka",
+        "age": 21,
+        "personality": "Energetic talkative"
+    },
+
+    {
+        "id": 4,
+        "name": "Martin",
+        "surname": "Deglovič",
+        "age": 23,
+        "personality": "Calm slightly lazy"
+    },
+
+    {
+        "id": 5,
+        "name": "Samuel",
+        "surname": "Haring",
+        "age": 20,
+        "personality": "Competitive gamer"
+    },
+
+    {
+        "id": 6,
+        "name": "Matúš",
+        "surname": "Holečka",
+        "age": 20,
+        "personality": "Helpful friendly"
+    },
+
+    {
+        "id": 7,
+        "name": "Martin",
+        "surname": "Jelínek",
+        "age": 22,
+        "personality": "Sporty active"
+    },
+
+    {
+        "id": 8,
+        "name": "Tomáš",
+        "surname": "Jurčák",
+        "age": 21,
+        "personality": "Meme lover funny"
+    },
+
+    {
+        "id": 9,
+        "name": "Milan",
+        "surname": "Kokina",
+        "age": 23,
+        "personality": "Serious focused"
+    },
+
+    {
+        "id": 10,
+        "name": "Patrik",
+        "surname": "Korba",
+        "age": 20,
+        "personality": "Chill relaxed"
+    },
+
+    {
+        "id": 11,
+        "name": "Marcus",
+        "surname": "Martiš",
+        "age": 22,
+        "personality": "Confident leader type"
+    },
+
+    {
+        "id": 12,
+        "name": "Samuel",
+        "surname": "Martiš",
+        "age": 20,
+        "personality": "Quiet smart"
+    },
+
+    {
+        "id": 13,
+        "name": "Marko",
+        "surname": "Mihalička",
+        "age": 21,
+        "personality": "Chaotic funny"
+    },
+
+    {
+        "id": 14,
+        "name": "Rastislav",
+        "surname": "Paták",
+        "age": 22,
+        "personality": "Logical thinker"
+    },
+
+    {
+        "id": 15,
+        "name": "Matej",
+        "surname": "Randziak",
+        "age": 22,
+        "personality": "Supportive friendly"
+    },
+
+    {
+        "id": 16,
+        "name": "Dávid",
+        "surname": "Škula",
+        "age": 20,
+        "personality": "Gaming addicted"
+    },
+
+    {
+        "id": 17,
+        "name": "Samuel",
+        "surname": "Uhrík",
+        "age": 21,
+        "personality": "Sarcastic witty"
+    },
+
+    {
+        "id": 18,
+        "name": "Janka",
+        "surname": "Vargová",
+        "age": 21,
+        "personality": "Kind caring"
+    },
+
+    {
+        "id": 19,
+        "name": "Lukáš",
+        "surname": "Vindiš",
+        "age": 22,
+        "personality": "Sporty competitive"
+    }
 ]
-
-
 
 # -----------------------
 # DB CONNECT
 # -----------------------
 def get_db():
+
     if not DATABASE_URL:
         return None
 
@@ -120,19 +183,20 @@ def get_db():
 # -----------------------
 @app.route("/")
 def home():
+
     return render_template("index.html")
 
 # -----------------------
 # GET STUDENTS
 # -----------------------
 @app.route("/api/students")
-def students():
+def get_students():
 
     conn = get_db()
 
     # LOCAL MODE
     if not conn:
-        return jsonify(students)
+        return jsonify(students_data)
 
     # DATABASE MODE
     cur = conn.cursor()
@@ -151,7 +215,7 @@ def students():
     return jsonify([
         {
             "id": r[0],
-            "name": r[1],    
+            "name": r[1],
             "surname": r[2],
             "age": r[3],
             "personality": r[4]
@@ -169,12 +233,12 @@ def add_student():
 
     conn = get_db()
 
-    # LOCAL
+    # LOCAL MODE
     if not conn:
 
-        new_id = len(students) + 1
+        new_id = len(students_data) + 1
 
-        students.append({
+        students_data.append({
             "id": new_id,
             "name": data["name"],
             "surname": data["surname"],
@@ -184,7 +248,7 @@ def add_student():
 
         return {"status": "added"}
 
-    # DATABASE
+    # DATABASE MODE
     cur = conn.cursor()
 
     cur.execute("""
@@ -215,19 +279,21 @@ def edit_student(student_id):
 
     conn = get_db()
 
-    # LOCAL
+    # LOCAL MODE
     if not conn:
 
-        for s in students:
+        for s in students_data:
 
             if s["id"] == student_id:
+
                 s["name"] = data["name"]
                 s["surname"] = data["surname"]
+                s["age"] = data["age"]
                 s["personality"] = data["personality"]
 
         return {"status": "edited"}
 
-    # DATABASE
+    # DATABASE MODE
     cur = conn.cursor()
 
     cur.execute("""
@@ -281,7 +347,7 @@ def chat(student_id):
         conn.close()
 
         if not student:
-            return {"error": "not found"}, 404
+            return {"error": "student not found"}, 404
 
         name = student[0]
         personality = student[1]
@@ -290,21 +356,24 @@ def chat(student_id):
     else:
 
         student = next(
-            (s for s in students if s["id"] == student_id),
+            (
+                s for s in students_data
+                if s["id"] == student_id
+            ),
             None
         )
 
         if not student:
-            return {"error": "not found"}, 404
+            return {"error": "student not found"}, 404
 
         name = student["name"]
         personality = student["personality"]
 
-    # NO AI KEY
+    # NO API KEY
     if not OPENAI_API_KEY:
 
         return {
-            "reply": f" im running without ai key rn"
+            "reply": f"{name}: lol im running without ai rn"
         }
 
     prompt = f"""
@@ -316,12 +385,13 @@ Personality:
 Rules:
 - casual replies
 - short messages
-- no AI mention
 - act like teenager
-- can be racist if in personality
+- no AI mention
+- do not repeat user message
 """
 
     response = requests.post(
+
         "https://api.openai.com/v1/chat/completions",
 
         headers={
@@ -330,9 +400,11 @@ Rules:
         },
 
         json={
+
             "model": "gpt-4o-mini",
 
             "messages": [
+
                 {
                     "role": "system",
                     "content": prompt
@@ -347,38 +419,20 @@ Rules:
     )
 
     try:
+
         reply = response.json()["choices"][0]["message"]["content"]
 
-    except:
-        reply = "AI error"
+    except Exception as e:
 
-    return {"reply": reply}
+        reply = str(e)
+
+    return {
+        "reply": reply
+    }
 
 # -----------------------
 # RUN
 # -----------------------
 if __name__ == "__main__":
+
     app.run(debug=True)
-
-
-
-
-
-#def find_smallest(students):
-    #smallest = students[0]
-#
-    #for s in students:
-        #if s["age"] < smallest["age"]:
-            #smallest = s
-#
-    #return smallest
-#
-#
-#students_sorted = []
-#
-#while students:
-    #smallest_student = find_smallest(students)
-    #students_sorted.append(smallest_student)
-    #students.remove(smallest_student)
-#
-#print(students_sorted)
