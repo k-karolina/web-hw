@@ -1,50 +1,113 @@
+<!-- templates/index.html -->
+
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>AI Students Chat</title>
+
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
 <div class="topbar">
-    <h2>AI Students</h2>
-    <button onclick="toggleTheme()">🌙</button>
+
+    <h2>AI Students Chat</h2>
+
+    <button onclick="toggleTheme()">
+        🌙
+    </button>
+
 </div>
 
 <div class="container">
 
-    <!-- LEFT: STUDENTS -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
+
         <h3>Students</h3>
+
+        <!-- ADD STUDENT -->
+        <div class="formBox">
+
+            <input
+                id="newName"
+                placeholder="Name"
+            >
+
+            <input
+                id="newSurname"
+                placeholder="Surname"
+            >
+
+            <textarea
+                id="newPersonality"
+                placeholder="Personality"
+            ></textarea>
+
+            <button onclick="addStudent()">
+                Add Student
+            </button>
+
+        </div>
+
+        <!-- STUDENTS -->
         <div id="students"></div>
+
     </div>
 
-    <!-- RIGHT: INFO CARD -->
+    <!-- RIGHT CARD -->
     <div class="card">
-        <h3>Select a student to chat</h3>
-        <p>Click on a student to open chat window</p>
+
+        <h2>Select a student</h2>
+
+        <p>
+            Click on somebody to start chatting
+        </p>
+
     </div>
 
 </div>
 
-<!-- POPUP CHAT -->
+<!-- CHAT MODAL -->
 <div id="chatModal" class="modal hidden">
+
     <div class="modalContent">
+
+        <!-- HEADER -->
         <div class="modalHeader">
+
             <span id="chatName"></span>
-            <button onclick="closeChat()">✖</button>
+
+            <button onclick="closeChat()">
+                ✖
+            </button>
+
         </div>
 
+        <!-- CHAT -->
         <div id="messages"></div>
 
+        <!-- INPUT -->
         <div class="chatInput">
-            <input id="msg" placeholder="Type message...">
-            <button onclick="send()">Send</button>
+
+            <input
+                id="msg"
+                placeholder="Type message..."
+            >
+
+            <button onclick="send()">
+                Send
+            </button>
+
         </div>
+
     </div>
+
 </div>
 
 <script src="/static/script.js"></script>
+
 </body>
 </html>
