@@ -8,6 +8,7 @@ let current = null;
 function loadStudents() {
 
     fetch("/api/students")
+
     .then(r => r.json())
 
     .then(data => {
@@ -33,7 +34,7 @@ function loadStudents() {
                         ${s.name} ${s.surname}
                     </span>
 
-                    <button onclick="editStudent(${s.id}, '${s.name}', '${s.surname}')">
+                    <button onclick="editStudent(${s.id}, '${s.name}', '${s.surname}', ${s.age})">
                         ✏️
                     </button>
 
@@ -187,7 +188,7 @@ function addStudent() {
 // -----------------------
 // EDIT STUDENT
 // -----------------------
-function editStudent(id, oldName, oldSurname) {
+function editStudent(id, oldName, oldSurname, oldAge) {
 
     event.stopPropagation();
 
@@ -196,6 +197,9 @@ function editStudent(id, oldName, oldSurname) {
 
     const surname =
         prompt("New surname:", oldSurname);
+
+    const age =
+        prompt("New age:", oldAge);
 
     const personality =
         prompt("New personality:");
