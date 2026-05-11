@@ -359,3 +359,26 @@ Rules:
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
+
+#def find_smallest(students):
+    #smallest = students[0]
+#
+    #for s in students:
+        #if s["age"] < smallest["age"]:
+            #smallest = s
+#
+    #return smallest
+#
+#
+#students_sorted = []
+#
+#while students:
+    #smallest_student = find_smallest(students)
+    #students_sorted.append(smallest_student)
+    #students.remove(smallest_student)
+#
+#print(students_sorted)
