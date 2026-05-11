@@ -304,7 +304,7 @@ def chat(student_id):
     if not OPENAI_API_KEY:
 
         return {
-            "reply": f": im running without ai key rn"
+            "reply": f" im running without ai key rn"
         }
 
     prompt = f"""
@@ -359,25 +359,3 @@ Rules:
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
-
-    
-    
-# to add: 
-# def find_smallest(students):
-#    smallest = students[0]
-#
-#    for s in students:
-#        if s["age"] < smallest["age"]:
-#            smallest = s
-
-#   return smallest
-
-
-#students_sorted = []
-
-#while students:
-    #smallest_student = find_smallest(students)
-    #students_sorted.append(smallest_student)
-    #students.remove(smallest_student)
-
-#print(students_sorted)
