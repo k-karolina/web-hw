@@ -227,7 +227,7 @@ def chat(student_id):
     if not OPENAI_API_KEY:
 
         return {
-            "reply": f"{name}: lol im running without ai key rn"
+            "reply": f"{name}: im running without ai key rn"
         }
 
     prompt = f"""
