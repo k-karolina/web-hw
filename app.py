@@ -184,22 +184,26 @@ def custom_sort(data, mode):
 
             swap = False
 
+            # NAME A-Z
             if mode == "name":
 
                 if a["name"].lower() > b["name"].lower():
                     swap = True
 
+            # YOUNGEST FIRST
             elif mode == "youngest":
 
                 if a["age"] > b["age"]:
                     swap = True
 
+            # OLDEST FIRST
             elif mode == "oldest":
 
                 if a["age"] < b["age"]:
                     swap = True
 
             if swap:
+
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
     return arr

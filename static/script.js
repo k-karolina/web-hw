@@ -7,7 +7,10 @@ let currentSort = "name";
 // -----------------------
 function loadStudents() {
 
-    fetch(`/api/students?sort=${currentSort}`)
+    const sort =
+        document.getElementById("sortSelect").value;
+
+    fetch(`/api/students?sort=${sort}`)
 
     .then(r => r.json())
 
@@ -32,9 +35,10 @@ function loadStudents() {
 
                     <span>
                         ${s.name} ${s.surname}
+                        (${s.age})
                     </span>
 
-                    <button onclick="editStudent(event, ${s.id}, '${s.name}', '${s.surname}', '${s.age}', '${s.personality}')">
+                    <button onclick="editStudent(${s.id}, '${s.name}', '${s.surname}', ${s.age}, '${s.personality}')">
                         ✏️
                     </button>
 
@@ -46,7 +50,6 @@ function loadStudents() {
                 current = s;
 
                 openChat(s);
-
             };
 
             container.appendChild(div);
