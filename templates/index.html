@@ -1,12 +1,12 @@
-<!-- templates/index.html -->
-
 <!DOCTYPE html>
 <html>
 
 <head>
+
     <title>AI Students Chat</title>
 
     <link rel="stylesheet" href="/static/style.css">
+
 </head>
 
 <body>
@@ -23,12 +23,16 @@
 
 <div class="container">
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
 
         <h3>Students</h3>
 
-        <!-- ADD STUDENT -->
+        <select onchange="changeSort(this.value)">
+            <option value="name">Name A-Z</option>
+            <option value="youngest">Youngest</option>
+            <option value="oldest">Oldest</option>
+        </select>
+
         <div class="formBox">
 
             <input
@@ -39,6 +43,12 @@
             <input
                 id="newSurname"
                 placeholder="Surname"
+            >
+
+            <input
+                id="newAge"
+                placeholder="Age"
+                type="number"
             >
 
             <textarea
@@ -52,12 +62,10 @@
 
         </div>
 
-        <!-- STUDENTS -->
         <div id="students"></div>
 
     </div>
 
-    <!-- RIGHT CARD -->
     <div class="card">
 
         <h2>Select a student</h2>
@@ -70,12 +78,10 @@
 
 </div>
 
-<!-- CHAT MODAL -->
 <div id="chatModal" class="modal hidden">
 
     <div class="modalContent">
 
-        <!-- HEADER -->
         <div class="modalHeader">
 
             <span id="chatName"></span>
@@ -86,10 +92,8 @@
 
         </div>
 
-        <!-- CHAT -->
         <div id="messages"></div>
 
-        <!-- INPUT -->
         <div class="chatInput">
 
             <input

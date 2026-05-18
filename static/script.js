@@ -1,13 +1,13 @@
-// static/script.js
-
 let current = null;
+
+let currentSort = "name";
 
 // -----------------------
 // LOAD STUDENTS
 // -----------------------
 function loadStudents() {
 
-    fetch("/api/students")
+    fetch(`/api/students?sort=${currentSort}`)
 
     .then(r => r.json())
 
@@ -34,7 +34,7 @@ function loadStudents() {
                         ${s.name} ${s.surname}
                     </span>
 
-                    <button onclick="editStudent(${s.id}, '${s.name}', '${s.surname}', ${s.age})">
+                    <button onclick="editStudent(event, ${s.id}, '${s.name}', '${s.surname}', '${s.age}', '${s.personality}')">
                         ✏️
                     </button>
 
@@ -42,8 +42,11 @@ function loadStudents() {
             `;
 
             div.onclick = () => {
+
                 current = s;
+
                 openChat(s);
+
             };
 
             container.appendChild(div);
@@ -55,6 +58,16 @@ function loadStudents() {
 }
 
 loadStudents();
+
+// -----------------------
+// SORT
+// -----------------------
+function changeSort(mode) {
+
+    currentSort = mode;
+
+    loadStudents();
+}
 
 // -----------------------
 // OPEN CHAT
@@ -80,7 +93,7 @@ function closeChat() {
 }
 
 // -----------------------
-// SEND MESSAGE
+// SEND
 // -----------------------
 function send() {
 
@@ -152,6 +165,9 @@ function addStudent() {
     const surname =
         document.getElementById("newSurname").value;
 
+    const age =
+        document.getElementById("newAge").value;
+
     const personality =
         document.getElementById("newPersonality").value;
 
@@ -166,6 +182,7 @@ function addStudent() {
         body: JSON.stringify({
             name,
             surname,
+            age,
             personality
         })
 
@@ -179,6 +196,7 @@ function addStudent() {
 
         document.getElementById("newName").value = "";
         document.getElementById("newSurname").value = "";
+        document.getElementById("newAge").value = "";
         document.getElementById("newPersonality").value = "";
 
     });
@@ -186,9 +204,9 @@ function addStudent() {
 }
 
 // -----------------------
-// EDIT STUDENT
+// EDIT
 // -----------------------
-function editStudent(id, oldName, oldSurname, oldAge) {
+function editStudent(event, id, oldName, oldSurname, oldAge, oldPersonality) {
 
     event.stopPropagation();
 
@@ -202,10 +220,7 @@ function editStudent(id, oldName, oldSurname, oldAge) {
         prompt("New age:", oldAge);
 
     const personality =
-        prompt("New personality:");
-
-    if (!name || !surname)
-        return;
+        prompt("New personality:", oldPersonality);
 
     fetch(`/api/students/${id}`, {
 
@@ -218,6 +233,7 @@ function editStudent(id, oldName, oldSurname, oldAge) {
         body: JSON.stringify({
             name,
             surname,
+            age,
             personality
         })
 

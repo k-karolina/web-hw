@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask, jsonify, request, render_template
 import psycopg2
 import os
@@ -11,7 +9,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # -----------------------
-# LOCAL FALLBACK DATA
+# LOCAL DATA
 # -----------------------
 students_data = [
 
@@ -169,7 +167,45 @@ students_data = [
 ]
 
 # -----------------------
-# DB CONNECT
+# CUSTOM SORT
+# -----------------------
+def custom_sort(data, mode):
+
+    arr = data[:]
+
+    n = len(arr)
+
+    for i in range(n):
+
+        for j in range(0, n - i - 1):
+
+            a = arr[j]
+            b = arr[j + 1]
+
+            swap = False
+
+            if mode == "name":
+
+                if a["name"].lower() > b["name"].lower():
+                    swap = True
+
+            elif mode == "youngest":
+
+                if a["age"] > b["age"]:
+                    swap = True
+
+            elif mode == "oldest":
+
+                if a["age"] < b["age"]:
+                    swap = True
+
+            if swap:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+    return arr
+
+# -----------------------
+# DB
 # -----------------------
 def get_db():
 
@@ -179,7 +215,7 @@ def get_db():
     return psycopg2.connect(DATABASE_URL)
 
 # -----------------------
-# FRONTEND
+# HOME
 # -----------------------
 @app.route("/")
 def home():
@@ -192,19 +228,24 @@ def home():
 @app.route("/api/students")
 def get_students():
 
+    sort_mode = request.args.get("sort", "name")
+
     conn = get_db()
 
-    # LOCAL MODE
     if not conn:
-        return jsonify(students_data)
 
-    # DATABASE MODE
+        sorted_students = custom_sort(
+            students_data,
+            sort_mode
+        )
+
+        return jsonify(sorted_students)
+
     cur = conn.cursor()
 
     cur.execute("""
         SELECT id, name, surname, age, personality
         FROM students
-        ORDER BY id
     """)
 
     rows = cur.fetchall()
@@ -212,7 +253,8 @@ def get_students():
     cur.close()
     conn.close()
 
-    return jsonify([
+    students = [
+
         {
             "id": r[0],
             "name": r[1],
@@ -220,8 +262,13 @@ def get_students():
             "age": r[3],
             "personality": r[4]
         }
+
         for r in rows
-    ])
+    ]
+
+    students = custom_sort(students, sort_mode)
+
+    return jsonify(students)
 
 # -----------------------
 # ADD STUDENT
@@ -233,33 +280,41 @@ def add_student():
 
     conn = get_db()
 
-    # LOCAL MODE
     if not conn:
 
         new_id = len(students_data) + 1
 
         students_data.append({
+
             "id": new_id,
+
             "name": data["name"],
+
             "surname": data["surname"],
-            "age": data["age"],
+
+            "age": int(data["age"]),
+
             "personality": data["personality"]
         })
 
         return {"status": "added"}
 
-    # DATABASE MODE
     cur = conn.cursor()
 
     cur.execute("""
+
         INSERT INTO students
         (name, surname, age, personality)
+
         VALUES (%s, %s, %s, %s)
+
     """, (
+
         data["name"],
         data["surname"],
-        data["age"],
+        int(data["age"]),
         data["personality"]
+
     ))
 
     conn.commit()
@@ -279,7 +334,6 @@ def edit_student(student_id):
 
     conn = get_db()
 
-    # LOCAL MODE
     if not conn:
 
         for s in students_data:
@@ -288,28 +342,33 @@ def edit_student(student_id):
 
                 s["name"] = data["name"]
                 s["surname"] = data["surname"]
-                s["age"] = data["age"]
+                s["age"] = int(data["age"])
                 s["personality"] = data["personality"]
 
         return {"status": "edited"}
 
-    # DATABASE MODE
     cur = conn.cursor()
 
     cur.execute("""
+
         UPDATE students
+
         SET
             name=%s,
             surname=%s,
             age=%s,
             personality=%s
+
         WHERE id=%s
+
     """, (
+
         data["name"],
         data["surname"],
-        data["age"],
+        int(data["age"]),
         data["personality"],
         student_id
+
     ))
 
     conn.commit()
@@ -320,17 +379,17 @@ def edit_student(student_id):
     return {"status": "edited"}
 
 # -----------------------
-# CHAT AI
+# CHAT
 # -----------------------
 @app.route("/api/chat/<int:student_id>", methods=["POST"])
 def chat(student_id):
 
     data = request.json
+
     message = data["message"]
 
     conn = get_db()
 
-    # DATABASE MODE
     if conn:
 
         cur = conn.cursor()
@@ -347,33 +406,28 @@ def chat(student_id):
         conn.close()
 
         if not student:
-            return {"error": "student not found"}, 404
+            return {"error": "not found"}, 404
 
         name = student[0]
         personality = student[1]
 
-    # LOCAL MODE
     else:
 
         student = next(
-            (
-                s for s in students_data
-                if s["id"] == student_id
-            ),
+            (s for s in students_data if s["id"] == student_id),
             None
         )
 
         if not student:
-            return {"error": "student not found"}, 404
+            return {"error": "not found"}, 404
 
         name = student["name"]
         personality = student["personality"]
 
-    # NO API KEY
     if not OPENAI_API_KEY:
 
         return {
-            "reply": f"{name}: lol im running without ai rn"
+            "reply": f"{name}: im running without ai rn"
         }
 
     prompt = f"""
@@ -387,7 +441,6 @@ Rules:
 - short messages
 - act like teenager
 - no AI mention
-- do not repeat user message
 """
 
     response = requests.post(
@@ -395,8 +448,10 @@ Rules:
         "https://api.openai.com/v1/chat/completions",
 
         headers={
+
             "Authorization": f"Bearer {OPENAI_API_KEY}",
             "Content-Type": "application/json"
+
         },
 
         json={
@@ -422,9 +477,9 @@ Rules:
 
         reply = response.json()["choices"][0]["message"]["content"]
 
-    except Exception as e:
+    except:
 
-        reply = str(e)
+        reply = "AI error"
 
     return {
         "reply": reply
