@@ -209,9 +209,7 @@ function addStudent() {
 // -----------------------
 // EDIT
 // -----------------------
-function editStudent(event, id, oldName, oldSurname, oldAge, oldPersonality) {
-
-    event.stopPropagation();
+function editStudent(id, oldName, oldSurname, oldAge, oldPersonality) {
 
     const name =
         prompt("New name:", oldName);
@@ -225,12 +223,15 @@ function editStudent(event, id, oldName, oldSurname, oldAge, oldPersonality) {
     const personality =
         prompt("New personality:", oldPersonality);
 
+    if (!name || !surname || !age || !personality)
+        return;
+
     fetch(`/api/students/${id}`, {
 
         method: "PUT",
 
         headers: {
-            "Content-Type":"application/json"
+            "Content-Type": "application/json"
         },
 
         body: JSON.stringify({
@@ -245,9 +246,7 @@ function editStudent(event, id, oldName, oldSurname, oldAge, oldPersonality) {
     .then(r => r.json())
 
     .then(() => {
-
         loadStudents();
-
     });
 
 }
