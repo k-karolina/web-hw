@@ -6,8 +6,7 @@ import requests
 app = Flask(__name__)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
+OPENAI_API_KEY = "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"
 # -----------------------
 # LOCAL DATA
 # -----------------------
@@ -388,9 +387,19 @@ def edit_student(student_id):
 @app.route("/api/chat/<int:student_id>", methods=["POST"])
 def chat(student_id):
 
-    data = request.json
+    data = request.get_json()
 
-    message = data["message"]
+    if not data:
+        return {
+            "reply": "No message received."
+        }
+
+    message = data.get("message", "").strip()
+
+    if not message:
+        return {
+            "reply": "Empty message."
+        }
 
     conn = get_db()
 
@@ -410,7 +419,9 @@ def chat(student_id):
         conn.close()
 
         if not student:
-            return {"error": "not found"}, 404
+            return {
+                "reply": "Student not found."
+            }, 404
 
         name = student[0]
         personality = student[1]
@@ -423,16 +434,12 @@ def chat(student_id):
         )
 
         if not student:
-            return {"error": "not found"}, 404
+            return {
+                "reply": "Student not found."
+            }, 404
 
         name = student["name"]
         personality = student["personality"]
-
-    if not OPENAI_API_KEY:
-
-        return {
-            "reply": f"{name}: im running without ai rn"
-        }
 
     prompt = f"""
 You are a student named {name}.
@@ -443,51 +450,65 @@ Personality:
 Rules:
 - casual replies
 - short messages
-- act like teenager
-- no AI mention
+- act like a teenager
+- text naturally
+- never mention AI
+- stay in character
 """
-
-    response = requests.post(
-
-        "https://api.openai.com/v1/chat/completions",
-
-        headers={
-
-            "Authorization": f"Bearer {OPENAI_API_KEY}",
-            "Content-Type": "application/json"
-
-        },
-
-        json={
-
-            "model": "gpt-4o-mini",
-
-            "messages": [
-
-                {
-                    "role": "system",
-                    "content": prompt
-                },
-
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ]
-        }
-    )
 
     try:
 
-        reply = response.json()["choices"][0]["message"]["content"]
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
 
-    except:
+            headers={
+                "Authorization": f"Bearer {OPENAI_API_KEY}",
+                "Content-Type": "application/json"
+            },
 
-        reply = "AI error"
+            json={
+                "model": "llama-3.1-8b-instant",
 
-    return {
-        "reply": reply
-    }
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": message
+                    }
+                ],
+
+                "temperature": 0.8,
+                "max_tokens": 100
+            },
+
+            timeout=30
+        )
+
+        result = response.json()
+
+        print(result)
+
+        if "choices" not in result:
+            return {
+                "reply": "AI error"
+            }
+
+        reply = result["choices"][0]["message"]["content"]
+
+        return {
+            "reply": reply
+        }
+
+    except Exception as e:
+
+        print("CHAT ERROR:", e)
+
+        return {
+            "reply": "AI error"
+        }
 
 # -----------------------
 # RUN
@@ -495,3 +516,4 @@ Rules:
 if __name__ == "__main__":
 
     app.run(debug=True)
+
